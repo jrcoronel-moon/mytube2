@@ -133,7 +133,33 @@ async function quitApp() {
   }
 }
 
+// Theme switching
+const THEMES = ['flux', 'wood', 'plastic', 'plasma'];
+const THEME_LABELS = { flux: 'Flux', wood: 'Wood', plastic: 'Plastic', plasma: 'Plasma' };
+let currentThemeIndex = 0;
+
+function loadTheme() {
+  const saved = localStorage.getItem('mytube2-theme');
+  if (saved && THEMES.includes(saved)) {
+    currentThemeIndex = THEMES.indexOf(saved);
+  }
+  applyTheme();
+}
+
+function applyTheme() {
+  const theme = THEMES[currentThemeIndex];
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeLabel').textContent = THEME_LABELS[theme];
+  localStorage.setItem('mytube2-theme', theme);
+}
+
+function cycleTheme() {
+  currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
+  applyTheme();
+}
+
 // Event listeners
+document.getElementById('themeBtn').addEventListener('click', cycleTheme);
 document.getElementById('settingsBtn').addEventListener('click', openEditor);
 document.getElementById('quitBtn').addEventListener('click', quitApp);
 document.getElementById('saveBtn').addEventListener('click', saveChannels);
@@ -157,4 +183,5 @@ modal.addEventListener('click', (e) => {
 });
 
 // Init
+loadTheme();
 loadChannels();
