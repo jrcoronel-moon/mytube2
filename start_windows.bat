@@ -18,5 +18,6 @@ if %errorlevel% neq 0 (
 )
 
 echo Starting MyTube2...
-node server.js
-pause
+start /b node server.js
+timeout /t 2 >nul
+exit

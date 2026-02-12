@@ -11,4 +11,7 @@ echo "Building MyTube2..."
 npm run build || { echo "Build failed."; read -p "Press Enter to exit..."; exit 1; }
 
 echo "Starting MyTube2..."
-node server.js
+nohup node server.js > /tmp/mytube2.log 2>&1 &
+echo "Server running (PID $!). You can close this window."
+sleep 2
+osascript -e 'tell application "Terminal" to close front window' &> /dev/null
