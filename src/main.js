@@ -59,7 +59,7 @@ function renderChannelBar() {
     btn.className = 'channel-btn';
     if (!url) btn.classList.add('empty');
     if (i === activeChannel) btn.classList.add('active');
-    btn.textContent = i === 9 ? '0' : String(i + 1);
+    btn.textContent = i === 9 ? '10' : String(i + 1);
     if (channelTitles[i]) {
       btn.setAttribute('data-tooltip', channelTitles[i]);
     }
@@ -79,7 +79,7 @@ function switchChannel(index) {
   } else {
     const id = getYouTubeID(url);
     if (id) {
-      player.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=0`;
+      player.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0`;
       player.style.display = 'block';
       noSignal.style.display = 'none';
     } else {
@@ -99,7 +99,7 @@ function openEditor() {
     row.className = 'channel-row';
 
     const label = document.createElement('label');
-    label.textContent = i === 9 ? '0' : String(i + 1);
+    label.textContent = i === 9 ? '10' : String(i + 1);
 
     const input = document.createElement('input');
     input.type = 'text';
