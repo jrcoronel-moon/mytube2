@@ -39,6 +39,22 @@ app.post('/api/channels', (req, res) => {
     }
 });
 
+// YouTube title via oEmbed (no API key needed)
+app.get('/api/title', async (req, res) => {
+    const url = req.query.url;
+    if (!url) return res.json({ title: '' });
+    try {
+        const resp = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`);
+        if (resp.ok) {
+            const data = await resp.json();
+            return res.json({ title: data.title || '' });
+        }
+        res.json({ title: '' });
+    } catch {
+        res.json({ title: '' });
+    }
+});
+
 // Shutdown endpoint
 app.post('/api/shutdown', (req, res) => {
     res.json({ message: 'Shutting down...' });

@@ -360,6 +360,7 @@ main {
 }
 
 .channel-btn {
+  position: relative;
   width: 48px;
   height: 48px;
   border-radius: var(--channel-radius);
@@ -393,6 +394,28 @@ main {
 
 .channel-btn.empty:hover {
   opacity: 0.6;
+}
+
+.channel-btn[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-color);
+  color: var(--text-primary);
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  white-space: nowrap;
+  z-index: 100;
+  pointer-events: none;
+  border: 1px solid var(--glass-border);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Theme indicator label */

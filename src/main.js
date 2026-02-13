@@ -7,6 +7,7 @@ const modal = document.getElementById('modal');
 const channelList = document.getElementById('channelList');
 
 let channels = Array(10).fill(''); // 10 channel URLs
+let channelTitles = Array(10).fill(''); // cached titles
 let activeChannel = -1;
 
 // Extract YouTube video ID
@@ -14,6 +15,19 @@ function getYouTubeID(url) {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
   const match = url.match(regExp);
   return (match && match[2].length === 11) ? match[2] : null;
+}
+
+// Fetch YouTube title via server proxy
+async function fetchTitle(url) {
+  if (!url) return '';
+  try {
+    const res = await fetch(`/api/title?url=${encodeURIComponent(url)}`);
+    if (res.ok) {
+      const data = await res.json();
+      return data.title || '';
+    }
+  } catch {}
+  return '';
 }
 
 // Load channels from server
@@ -28,6 +42,13 @@ async function loadChannels() {
     console.error('Failed to load channels:', err);
   }
   renderChannelBar();
+  fetchAllTitles();
+}
+
+async function fetchAllTitles() {
+  const promises = channels.map((url, i) => fetchTitle(url).then(t => { channelTitles[i] = t; }));
+  await Promise.all(promises);
+  renderChannelBar();
 }
 
 // Render channel buttons
@@ -39,6 +60,9 @@ function renderChannelBar() {
     if (!url) btn.classList.add('empty');
     if (i === activeChannel) btn.classList.add('active');
     btn.textContent = i === 9 ? '0' : String(i + 1);
+    if (channelTitles[i]) {
+      btn.setAttribute('data-tooltip', channelTitles[i]);
+    }
     btn.onclick = () => switchChannel(i);
     channelBar.appendChild(btn);
   });
@@ -113,6 +137,7 @@ async function saveChannels() {
 
   closeEditor();
   renderChannelBar();
+  fetchAllTitles();
 
   // If current channel was updated, refresh it
   if (activeChannel >= 0) {
